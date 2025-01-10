@@ -1,115 +1,67 @@
-import { ToolInvocation } from "ai"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ToolInvocation } from "ai";
+import { BaseToolProps } from "@/types/tools";
+import { toolComponents, ToolName } from "@/utils/toolRegistry";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 interface ToolInvocationDisplayProps {
-  toolInvocation: ToolInvocation
-  addToolResult: (result: { toolCallId: string; result: string }) => void
+	toolInvocation: ToolInvocation | null;
+	addToolResult: (result: { toolCallId: string; result: string }) => void;
+}
+
+const animations = {
+	initial: { opacity: 0, y: 20 },
+	animate: { opacity: 1, y: 0 },
+	exit: { opacity: 0, y: -20 },
+	transition: { duration: 0.2 },
+};
+
+function FallbackComponent({ toolInvocation }: BaseToolProps) {
+	return (
+		<motion.div {...animations}>
+			<Card>
+				<CardHeader>
+					<CardTitle>{toolInvocation.toolName}</CardTitle>
+				</CardHeader>
+				<CardContent>
+					{"result" in toolInvocation ? (
+						<p>{toolInvocation.result}</p>
+					) : (
+						<div className="flex items-center gap-2">
+							<div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+							<p>Processing...</p>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+		</motion.div>
+	);
 }
 
 export default function ToolInvocationDisplay({
-  toolInvocation,
-  addToolResult,
+	toolInvocation,
+	addToolResult,
 }: ToolInvocationDisplayProps) {
-  const toolCallId = toolInvocation.toolCallId
+	if (!toolInvocation) return null;
 
-  if (toolInvocation.toolName === "askForConfirmation") {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Confirmation Required</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="mb-4">{toolInvocation.args.message}</p>
-          {"result" in toolInvocation ? (
-            <p className="font-bold">{toolInvocation.result}</p>
-          ) : (
-            <div className="flex gap-2">
-              <Button
-                onClick={() =>
-                  addToolResult({
-                    toolCallId,
-                    result: "Yes, confirmed.",
-                  })
-                }
-              >
-                Yes
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={() =>
-                  addToolResult({
-                    toolCallId,
-                    result: "No, denied",
-                  })
-                }
-              >
-                No
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    )
-  }
+	const toolName = toolInvocation.toolName as ToolName;
+	const ToolComponent = toolComponents[toolName];
 
-  if (toolInvocation.toolName === "getWeatherInformation" && "result" in toolInvocation) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Weather Information</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex flex-col gap-2 p-4 bg-blue-400 rounded-lg text-white">
-            <div className="flex justify-between items-center">
-              <div className="text-4xl font-medium">
-                {toolInvocation.result.value}°
-                {toolInvocation.result.unit === "celsius" ? "C" : "F"}
-              </div>
-              <div className="h-9 w-9 bg-amber-400 rounded-full" />
-            </div>
-            <div className="flex gap-2 justify-between">
-              {toolInvocation.result.weeklyForecast.map(
-                (forecast: { day: string; value: number }) => (
-                  <div key={forecast.day} className="flex flex-col items-center">
-                    <div className="text-xs">{forecast.day}</div>
-                    <div>{forecast.value}°</div>
-                  </div>
-                )
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
+	if (ToolComponent) {
+		return (
+			<motion.div {...animations}>
+				<ToolComponent
+					toolInvocation={toolInvocation}
+					addToolResult={addToolResult}
+				/>
+			</motion.div>
+		);
+	}
 
-  if (toolInvocation.toolName === "getLocation" && "result" in toolInvocation) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>User Location</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p>User is in {toolInvocation.result}.</p>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{toolInvocation.toolName}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        {"result" in toolInvocation ? (
-          <p>{toolInvocation.result}</p>
-        ) : (
-          <p>Calling {toolInvocation.toolName}...</p>
-        )}
-      </CardContent>
-    </Card>
-  )
+	return (
+		<FallbackComponent
+			toolInvocation={toolInvocation}
+			addToolResult={addToolResult}
+		/>
+	);
 }
-
