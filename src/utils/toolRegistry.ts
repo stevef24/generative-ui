@@ -1,11 +1,11 @@
-import { WeatherTool } from "@/components/tools/WeatherTool";
-import { LocationTool } from "@/components/tools/LocationTool";
+import { BenefitTool } from "@/components/tools/BenefitTool";
 import { ConfirmationTool } from "@/components/tools/ConfirmationTool";
+import { PDFProcessingTool } from "@/components/tools/PDFProcessingTool";
 
 export const toolComponents = {
-	getWeatherInformation: WeatherTool,
-	getLocation: LocationTool,
 	askForConfirmation: ConfirmationTool,
+	processPDF: PDFProcessingTool,
+	getBenefits: BenefitTool,
 } as const;
 
 export type ToolName = keyof typeof toolComponents;
