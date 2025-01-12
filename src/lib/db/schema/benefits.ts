@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import { text, timestamp, pgTable } from "drizzle-orm/pg-core";
 
 export const benefits = pgTable("benefits", {

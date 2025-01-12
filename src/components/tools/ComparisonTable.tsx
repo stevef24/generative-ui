@@ -101,7 +101,7 @@ function renderCellContent(account: AccountInfo, key: string) {
 				<X className="text-red-500" />
 			);
 		default:
-			return account[key];
+			return account[key as keyof AccountInfo];
 	}
 }
 

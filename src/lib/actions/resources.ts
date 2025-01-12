@@ -1,41 +1,34 @@
 "use server";
 
-import {
-	NewResourceParams,
-	insertResourceSchema,
-	resources,
-} from "@/lib/db/schema/resources";
-import { db } from "../db";
-import { findRelevantContent, generateEmbeddings } from "../ai/embedding";
-import { embeddings as embeddingsTable } from "../db/schema/embeddings";
+import { findRelevantContent } from "../ai/embedding";
 import { generateObject } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { z } from "zod";
 
-export const createResource = async (input: NewResourceParams) => {
-	try {
-		const { content } = insertResourceSchema.parse(input);
+// export const createResource = async (input: NewResourceParams) => {
+// 	try {
+// 		const { content } = insertResourceSchema.parse(input);
 
-		const [resource] = await db
-			.insert(resources)
-			.values({ content })
-			.returning();
+// 		const [resource] = await db
+// 			.insert(resources)
+// 			.values({ content })
+// 			.returning();
 
-		const embeddings = await generateEmbeddings(content);
-		await db.insert(embeddingsTable).values(
-			embeddings.map((embedding) => ({
-				resourceId: resource.id,
-				...embedding,
-			}))
-		);
+// 		const embeddings = await generateEmbeddings(content);
+// 		await db.insert(embeddingsTable).values(
+// 			embeddings.map((embedding) => ({
+// 				resourceId: resource.id,
+// 				...embedding,
+// 			}))
+// 		);
 
-		return "Resource successfully created and embedded.";
-	} catch (error) {
-		return error instanceof Error && error.message.length > 0
-			? error.message
-			: "Error, please try again.";
-	}
-};
+// 		return "Resource successfully created and embedded.";
+// 	} catch (error) {
+// 		return error instanceof Error && error.message.length > 0
+// 			? error.message
+// 			: "Error, please try again.";
+// 	}
+// };
 
 export const getBenefits = async (question: string) => {
 	const relevantContent = await findRelevantContent(question);

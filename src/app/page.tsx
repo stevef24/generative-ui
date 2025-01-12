@@ -11,10 +11,11 @@ import { User } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 export default function Chat() {
-	const { messages, input, handleInputChange, handleSubmit } = useChat({
-		api: "/api/chat",
-		maxSteps: 2,
-	});
+	const { messages, input, handleInputChange, handleSubmit, isLoading, stop } =
+		useChat({
+			api: "/api/chat",
+			maxSteps: 2,
+		});
 
 	const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -62,6 +63,23 @@ export default function Chat() {
 
 											switch (t.toolName) {
 												case "getCurrentAccounts":
+													return t.state === "call" ? (
+														<div
+															key={t.toolCallId}
+															className="flex items-center gap-2"
+														>
+															<div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+															<span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+																Fetching accounts...
+															</span>
+														</div>
+													) : t.state === "result" ? (
+														<AccountCardsContainer
+															key={t.toolCallId}
+															accounts={t.result.accounts}
+														/>
+													) : null;
+												case "getOtherBankAccounts":
 													return t.state === "call" ? (
 														<div
 															key={t.toolCallId}
@@ -147,6 +165,8 @@ export default function Chat() {
 				handleSubmit={() => {
 					handleSubmit(new Event("submit"));
 				}}
+				isLoading={isLoading}
+				stop={stop}
 			/>
 		</div>
 	);

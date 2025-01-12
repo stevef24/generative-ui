@@ -1,9 +1,8 @@
 "use client";
 
-import { PaperclipIcon, SendIcon } from "lucide-react";
+import { PaperclipIcon, Square, SendIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
 import { useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -11,12 +10,16 @@ interface ChatInputProps {
 	input: string;
 	handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	handleSubmit: () => void;
+	isLoading: boolean;
+	stop: () => void;
 }
 
 export function ChatInput({
 	input,
 	handleInputChange,
 	handleSubmit,
+	isLoading,
+	stop,
 }: ChatInputProps) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [isUploading, setIsUploading] = useState(false);
@@ -25,7 +28,6 @@ export function ChatInput({
 		const file = e.target.files?.[0];
 		if (!file) return;
 
-		// Check if file is PDF
 		if (file.type !== "application/pdf") {
 			toast.error("Please upload a PDF file");
 			return;
@@ -50,22 +52,18 @@ export function ChatInput({
 
 			toast.success("PDF processed successfully");
 
-			// You can handle the parsed text here
-			// For example, you could set it as the input value
 			handleInputChange({
 				target: {
 					value: `I've uploaded a PDF file named ${fileName}. Please help me analyze its contents.`,
 				},
 			} as React.ChangeEvent<HTMLInputElement>);
 
-			// Automatically submit after processing
 			handleSubmit();
 		} catch (error) {
 			console.error("Error processing PDF:", error);
 			toast.error("Failed to process PDF file");
 		} finally {
 			setIsUploading(false);
-			// Reset file input
 			if (fileInputRef.current) {
 				fileInputRef.current.value = "";
 			}
@@ -73,46 +71,72 @@ export function ChatInput({
 	};
 
 	return (
-		<div className="w-[800px] max-sm:w-full mx-auto sticky bottom-0 bg-gradient-to-t from-background via-background/80 to-background/40 p-4 backdrop-blur-xl">
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					handleSubmit();
-				}}
-				className="flex gap-2 items-center"
-			>
-				<input
-					type="file"
-					accept=".pdf"
-					onChange={handleFileUpload}
-					ref={fileInputRef}
-					className="hidden"
-				/>
-				<Button
-					type="button"
-					size="icon"
-					variant="ghost"
-					onClick={() => fileInputRef.current?.click()}
-					disabled={isUploading}
+		<div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-md border-t">
+			<div className="max-w-4xl mx-auto p-4">
+				<form
+					onSubmit={(e) => {
+						e.preventDefault();
+						handleSubmit();
+					}}
+					className="relative flex items-center gap-2"
 				>
-					<PaperclipIcon
-						className={`h-5 w-5 ${isUploading ? "animate-spin" : ""}`}
-					/>
-				</Button>
-				<Input
-					value={input}
-					onChange={handleInputChange}
-					placeholder="Ask a question..."
-					className="flex-1 "
-				/>
-				<Button
-					type="submit"
-					size="icon"
-					disabled={!input.trim() || isUploading}
-				>
-					<SendIcon className="h-5 w-5" />
-				</Button>
-			</form>
+					<div className="relative flex w-full rounded-lg border bg-background px-4 py-2 shadow-sm focus-within:ring-1 focus-within:ring-primary">
+						<input
+							type="file"
+							accept=".pdf"
+							onChange={handleFileUpload}
+							ref={fileInputRef}
+							className="hidden"
+						/>
+						<div className="flex gap-2">
+							<Button
+								type="button"
+								size="icon"
+								variant="ghost"
+								className="h-8 w-8"
+								onClick={() => fileInputRef.current?.click()}
+								disabled={isLoading || isUploading}
+							>
+								<PaperclipIcon
+									className={`h-5 w-5 ${isUploading ? "animate-spin" : ""}`}
+								/>
+							</Button>
+						</div>
+						<Input
+							value={input}
+							onChange={handleInputChange}
+							placeholder="Ask a follow up..."
+							className="flex-1 border-0 bg-transparent px-2 py-1 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0"
+							disabled={isLoading || isUploading}
+						/>
+						<div className="flex items-center">
+							{isLoading ? (
+								<Button
+									type="button"
+									size="icon"
+									variant="ghost"
+									className="h-8 w-8"
+									onClick={stop}
+								>
+									<Square className="h-4 w-4" />
+									<span className="sr-only">Stop generating</span>
+								</Button>
+							) : (
+								<Button
+									type="submit"
+									size="icon"
+									variant="ghost"
+									className="h-8 w-8"
+									disabled={!input.trim() || isUploading}
+								>
+									<SendIcon className="h-4 w-4" />
+									<span className="sr-only">Send message</span>
+								</Button>
+							)}
+						</div>
+					</div>
+				</form>
+			</div>
 		</div>
 	);
 }
