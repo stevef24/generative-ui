@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 								description:
 									"Our packaged bank account. Get worldwide family travel and mobile phone insurance, plus UK and European breakdown cover.",
 								monthlyFee: 18,
-								imageSrc: "/images/flexplus-hero-clay-decorative-large.png", // Default icon path
+								imageSrc: "/Images/flexplus-hero-clay-decorative-large.png", // Default icon path
 								link: "https://www.nationwide.co.uk/current-accounts/flexplus",
 								features: [
 									"Travel insurance",
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
 								description:
 									"Our self-service bank account that pays you to bank with us. Get 5% interest on your money and 1% cashback on debit card purchases for 12 months.",
 								monthlyFee: 0,
-								imageSrc: "/images/flexdirect-hero-clay-decorative-large.png",
+								imageSrc: "/Images/flexdirect-hero-clay-decorative-large.png",
 								link: "https://www.nationwide.co.uk/current-accounts/flexdirect",
 								features: ["5% interest", "1% cashback", "No monthly fee"],
 							},
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 								name: "FlexAccount",
 								description: "Our everyday bank account. Bank your way.",
 								monthlyFee: 0,
-								imageSrc: "/images/flexaccount-hero-clay-decorative-large.png", // Default icon path
+								imageSrc: "/Images/flexaccount-hero-clay-decorative-large.png", // Default icon path
 								link: "https://www.nationwide.co.uk/current-accounts/flexaccount",
 								features: ["No monthly fee", "Basic banking"],
 							},
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 								description:
 									"Our packaged bank account. Get worldwide family travel and mobile phone insurance, plus UK and European breakdown cover.",
 								monthlyFee: 0,
-								imageSrc: "/images/flexbasic-hero-clay-decorative-large.png", // Default icon path
+								imageSrc: "/Images/flexbasic-hero-clay-decorative-large.png", // Default icon path
 								link: "https://www.nationwide.co.uk/current-accounts/flexbasic",
 								features: ["No monthly fee"],
 							},
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 								description:
 									"Our self-service bank account that pays you to bank with us. Get 5% interest on your money and 1% cashback on debit card purchases for 12 months.",
 								monthlyFee: 0,
-								imageSrc: "/images/flexone-hero-clay-decorative-large.png",
+								imageSrc: "/Images/flexone-hero-clay-decorative-large.png",
 								link: "https://www.nationwide.co.uk/current-accounts/flexone",
 								features: ["No monthly fee"],
 							},
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
 								name: "FlexStudent",
 								description: "Our everyday bank account. Bank your way.",
 								monthlyFee: 0,
-								imageSrc: "/images/flexstudent-hero-clay-decorative-large.png", // Default icon path
+								imageSrc: "/Images/flexstudent-hero-clay-decorative-large.png", // Default icon path
 								link: "https://www.nationwide.co.uk/current-accounts/flexstudent",
 								features: ["No monthly fee", "Basic banking"],
 							},
