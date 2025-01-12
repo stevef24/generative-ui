@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 						.string()
 						.describe("the content or resource to add to the knowledge base"),
 				}),
-				execute: async ({ content }) => createResource({ content }),
+				execute: async ({ content }) => createResource(content),
 			}),
 			getInformation: tool({
 				description: `get information from your knowledge base to answer questions.`,
