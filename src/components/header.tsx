@@ -12,7 +12,7 @@ export function Header() {
 					height={24}
 					className="w-6 h-6"
 				/>
-				<h1 className="font-semibold">Alfred GPT</h1>
+				<h1 className="font-semibold">Nationwide GPT</h1>
 			</div>
 			<ModeToggle />
 		</header>
