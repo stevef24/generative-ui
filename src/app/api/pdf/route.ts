@@ -29,7 +29,6 @@ export async function POST(req: NextRequest) {
 		});
 	}
 
-	// Generate a unique filename
 	fileName = uuidv4();
 	const tempFilePath = `/tmp/${fileName}.pdf`;
 	const fileBuffer = Buffer.from(await uploadedFile.arrayBuffer());
@@ -38,7 +37,6 @@ export async function POST(req: NextRequest) {
 	const pdfParser = new (PDFParser as any)(null, 1);
 
 	try {
-		// Convert the PDF parsing to a Promise
 		parsedText = await new Promise((resolve, reject) => {
 			pdfParser.on("pdfParser_dataError", (errData: any) =>
 				reject(errData.parserError)
@@ -49,10 +47,8 @@ export async function POST(req: NextRequest) {
 			pdfParser.loadPDF(tempFilePath);
 		});
 
-		// Generate embeddings from the parsed text
 		const embeddingsData = await generateEmbeddings(parsedText);
 
-		// Store embeddings in the database
 		await db.insert(embeddings).values(
 			embeddingsData.map((data) => ({
 				content: data.content,
@@ -61,7 +57,6 @@ export async function POST(req: NextRequest) {
 			}))
 		);
 
-		// Clean up the temporary file
 		await fs.unlink(tempFilePath);
 	} catch (error) {
 		console.error("Error processing PDF:", error);
